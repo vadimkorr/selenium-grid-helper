@@ -1,0 +1,29 @@
+{
+  "name": "selenium-grid-helper",
+  "version": "1.0.0",
+  "description": "Google Chrome extension for Selenium Grid displaying busy browsers on each node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vadimkorr/selenium-grid-helper.git"
+  },
+  "keywords": [
+    "google",
+    "chrome",
+    "extension",
+    "selenium",
+    "grid"
+  ],
+  "author": "Vadimkorr",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/vadimkorr/selenium-grid-helper/issues"
+  },
+  "homepage": "https://github.com/vadimkorr/selenium-grid-helper#readme",
+  "dependencies": {
+    "jquery": "^3.2.1"
+  }
+}

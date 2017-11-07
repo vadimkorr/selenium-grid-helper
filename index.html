@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Selenium Grid Helper</title>
+    <style type="text/css">
+      body {
+        width: 300px;
+        margin: 10px;
+        white-space: nowrap;
+      }
+
+      #title {
+        display: flex;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      .nodeId {
+        font-weight: bold;
+      }
+
+      .center-content {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .browserData {
+        margin-left: 5px;
+      }
+    </style>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="popup.js"></script>
+  </head>
+
+  <body>
+    <div id="title">Selenium Grid Helper</div>
+    <div class="center-content">
+      <button id="refreshBtn">Show busy browsers (busy/total)</button>
+    </div>
+    <div id="data"></div>
+  </body>
+</html>
