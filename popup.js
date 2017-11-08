@@ -70,11 +70,8 @@ function getCurrentTabId(callback) {
   });
 }
 
-
-
-chrome.tabs.onUpdated.addListener()
-
 document.addEventListener('DOMContentLoaded', () => {
+  updateStats();
   getCurrentTabId((id) => {
     currentTabId = id;
   });
