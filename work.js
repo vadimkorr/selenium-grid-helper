@@ -11,7 +11,8 @@ for (let nodeInd = 0; nodeInd < node.length; nodeInd++) {
     for (let brTypeInd = 0; brTypeInd < browsersByType.length; brTypeInd++ ) {
         let allBrowsers = $(browsersByType[brTypeInd]).find("img");
         let busyBrowsers = $(browsersByType[brTypeInd]).find("img.busy");
-        let browserName = ($(allBrowsers[0]).attr("title")).match(/browserName=(.*?),/)[1]
+        //let browserName = ($(allBrowsers[0]).attr("title")).match(/browserName=(.*?),/)[1]
+		let browserName = ($(allBrowsers[0]).prop("currentSrc")).match(/.*\/(\w*)/)[1]
         let browser = {
             name: browserName,
             busy: busyBrowsers.length,
