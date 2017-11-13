@@ -1,10 +1,35 @@
+// Components 
+
+function nodeComponent(id, browserComponents) {
+  return `
+    <div class="node-info-container">
+      asdf asfd asd fasf asd fadsf asdf adf adf sdf sdf sdf sdf sdf sdf s fsd f
+    </div>
+    <div class="node-browsers">
+      ${browserComponents.join("")}
+    </div>
+  `;
+}
+
+function browserComponent(name, img, ver, busyCount, totalCount) {
+  return `
+    <div class="browser-data">
+      <div class="browser-icon-container">
+        <img class="browser-img" src='node_modules/browser-logos/src/${name}/${name}_128x128.png' alt="${name}asdfasdfasadfasdfasdfasdf"/>
+      </div>  
+      ${name} (${busyCount}/${totalCount})
+      <span>version: ${ver}</span>
+    </div>
+  `;
+}
+
 function getCurrentTab(callback) {
   var queryInfo = {
     active: true,
     currentWindow: true
   };
 
-  chrome.tabs.query(queryInfo, (tabs) => {
+  p.tabs.query(queryInfo, (tabs) => {
     var tab = tabs[0];
     //var url = tab.url;
     //console.assert(typeof url == 'string', 'tab.url should be a string');
@@ -17,24 +42,26 @@ function displayData(d) {
   let data = d[0];
   for (let nodeInd = 0; nodeInd < data.length; nodeInd++) {
     let node = data[nodeInd];
-    let nodeEl = $("#data").append(`<p class="nodeId">` + node.nodeId + `</p>`);
+    let brComps = [];
     for (let brInd = 0; brInd < node.browsers.length; brInd++) {
       let br = node.browsers[brInd];
-      $(nodeEl).append(`<p class="browserData">` + br.name + `(` + br.busy + `/` + br.total + `)` + `</p>`);
+      brComps.push(browserComponent(br.name, "", "", br.busy, br.total));
     }
+    $("#data").append(nodeComponent(node.nodeId, brComps));
   }
 }
 
 function injectScripts(scripts, scriptCallback, injectionCallback) {
   if(scripts.length) {
     var script = scripts.shift();
-    chrome.tabs.executeScript({
+    p.tabs.executeScript({
       file: script
     }, function(d) {
-      if (typeof scriptCallback === "function" && scripts.length == 0) {
+      //if (d && typeof scriptCallback === "function" && scripts.length == 0) {
+        console.log("d: " + d);
         scriptCallback(d);
-      }
-      if(chrome.runtime.lastError && typeof injectionCallback === "function") {
+      //}
+      if(p.runtime.lastError && typeof injectionCallback === "function") {
         injectionCallback(false); // Injection failed
       }
       injectScripts(scripts, scriptCallback, injectionCallback);
@@ -47,41 +74,79 @@ function injectScripts(scripts, scriptCallback, injectionCallback) {
 }
 
 function updateStats() {
-  injectScripts(["node_modules/jquery/dist/jquery.min.js", "work.js"], displayData, null);
+  let fakeData = [{
+    nodeId: 'id : http://192.168.50.199:4444, OS : WIN10',
+    browsers: [{
+      name: 'chrome',
+      busy: 5,
+      total: 10
+    },{
+      name: 'firefox',
+      busy: 15,
+      total: 20
+    },{
+      name: 'ie',
+      busy: 5,
+      total: 20
+    },{
+      name: 'opera',
+      busy: 5,
+      total: 20
+    },{
+      name: 'edge',
+      busy: 5,
+      total: 20
+    }]
+  },{
+    nodeId: 'id : http://192.168.50.199:4445, OS : WIN10',
+    browsers: [{
+      name: 'chrome',
+      busy: 6,
+      total: 10
+    },{
+      name: 'firefox',
+      busy: 11,
+      total: 20
+    },{
+      name: 'ie',
+      busy: 7,
+      total: 20
+    }]
+  },{
+    nodeId: 'id : http://192.168.50.199:4446, OS : WIN10',
+    browsers: [{
+      name: 'chrome',
+      busy: 6,
+      total: 10
+    }]
+  }];
+
+  injectScripts(["node_modules/jquery/dist/jquery.min.js", "work.js"], (d) => {
+    displayData([fakeData]);
+  }, null);
 }
 
+let p;
 function refreshCurrentPage() {
-  chrome.tabs.query({
+  p.tabs.query({
     active: true,
     currentWindow: true
   }, (arrayOfTabs) => {
-    chrome.tabs.reload(arrayOfTabs[0].id, {}, updateStats);
-  });
-}
-
-let currentTabId;
-
-function getCurrentTabId(callback) {
-  chrome.tabs.query({
-    active: true,
-    currentWindow: true
-  }, (arrayOfTabs) => {
-	callback(arrayOfTabs[0].id);
+    p.tabs.reload(arrayOfTabs[0].id, {}, updateStats);
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  updateStats();
-  getCurrentTabId((id) => {
-    currentTabId = id;
-  });
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  p = chrome || browser;
+  refreshCurrentPage();
+
+  p.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     updateStats();
   })
   getCurrentTab((tab) => {
-	let refreshAndUpdateBtn = document.getElementById('refreshAndUpdateBtn');
-	refreshAndUpdateBtn.addEventListener('click', () => {
-      refreshCurrentPage();
-    });
+    let refreshAndUpdateBtn = document.getElementById('refreshAndUpdateBtn');
+    refreshAndUpdateBtn.addEventListener('click', () => {
+        refreshCurrentPage();
+      });
   });
 });

@@ -11,6 +11,6 @@
   },
   "permissions": [
     "activeTab",
-	"http://*/grid/console*"
+	  "http://*/grid/console*"
   ]
 }
